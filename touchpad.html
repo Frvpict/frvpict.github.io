@@ -53,11 +53,11 @@
 
     pad.style.width = pad.style.height = taillePad + 'px';
 
-    function envoiMouvement() {
+    function envoiMouvement() {/*
         const xhr = new XMLHttpRequest();
         xhr.open('Mouvement', 'mouvement?x=' + vitesse[0] + '&y=' + vitesse[1], true);
-        xhr.send();
-        //valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
+        xhr.send();*/
+        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
     }
     
     function envoiMvt(position) {
@@ -104,7 +104,6 @@ pad.addEventListener('mouseleave', (position) => {
         vitesse[0] = Math.trunc((position.touches[0].clientX - rect.left)/pallierVitesse) - vitesseMax;
         vitesse[1] = vitesseMax - Math.trunc((position.touches[0].clientY - rect.top)/pallierVitesse);
 
-        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
     }, supportsPassive ? { passive: true } : false);
 
     pad.addEventListener('touchend', () => {
