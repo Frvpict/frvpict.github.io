@@ -57,14 +57,15 @@
         const xhr = new XMLHttpRequest();
         xhr.open('Mouvement', 'mouvement?x=' + vitesse[0] + '&y=' + vitesse[1], true);
         xhr.send();
-        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
+        //valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
     }
     
     function envoiMvt(position) {
-        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1] + ' - Position t x = ' + position.clientX + ' - Position t y = ' + position.clientY;/*
+       /*
         const xhr = new XMLHttpRequest();
         xhr.open('Mouvement', 'mouvement?x=' + vitesse[0] + '&y=' + vitesse[1], true);
         xhr.send();*/
+        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
     }
 
 pad.addEventListener('mousemove', (position) => {
@@ -95,11 +96,15 @@ pad.addEventListener('mouseleave', (position) => {
 
     pad.addEventListener('touchmove', (position) => {
         if(position.touches[0].clientX < rect.left || position.touches[0].clientX > rect.right || 
-            position.touches[0].clientY < rect.top || position.touches[0].clientY > rect.bottom)
-            return;
+            position.touches[0].clientY < rect.top || position.touches[0].clientY > rect.bottom) {
+                valeur.textContent = "toto";
+                return;
+            }
             
         vitesse[0] = Math.trunc((position.touches[0].clientX - rect.left)/pallierVitesse) - vitesseMax;
         vitesse[1] = vitesseMax - Math.trunc((position.touches[0].clientY - rect.top)/pallierVitesse);
+
+        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
     }, supportsPassive ? { passive: true } : false);
 
     pad.addEventListener('touchend', () => {
