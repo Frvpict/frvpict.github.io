@@ -37,14 +37,14 @@
                 supportsPassive = true;
             }
         });
-        window.addEventListener("testPassive", null, opts);
-        window.removeEventListener("testPassive", null, opts);
+        window.addEventListener('testPassive', null, opts);
+        window.removeEventListener('testPassive', null, opts);
     } catch (e) {}
 
     const pad = document.getElementById('pad');
     const rect = pad.getBoundingClientRect();
     const valeur = document.getElementById('valeur');
-    //Position relative - Position absolue
+    //Position absolue - Position relative
     let position = [[0, 0],[0, 0]];
     //taille du touch pad
     let taillePad = 180;
@@ -53,16 +53,16 @@
     pad.style.width = pad.style.height = taillePad + 'px';
 
     function affichePosition() {
-        valeur.textContent = "<p>Position relative : " + position[0][0] + " / " + position[0][1] + "</p>";
-        valeur.textContent += "<p>Position absolue : " + position[1][0] + " / " + position[1][1] + "</p>";
+        valeur.innerHTML = '<p>Position absolue : ' + position[0][0] + ' / ' + position[0][1] + '</p>';
+        valeur.innerHTML += '<p>Position relative : ' + position[1][0] + ' / ' + position[1][1] + '</p>';
     }
 
     pad.addEventListener('touchstart', (evt) => {
-        //Renseigne la position relative de l'endroit touché
+        //Renseigne la position absolue de l'endroit touché
         position[0][0] = evt.touches[0].clientX;
         position[0][1] = evt.touches[0].clientY;
 
-        //Renseigne la position aboslue de l'endroit touché
+        //Renseigne la position relative de l'endroit touché
         position[1][0] = position[0][0] - rect.left;
         position[1][1] = position[0][1] - rect.top;
 
