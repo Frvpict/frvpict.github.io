@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang='fr'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Contrôle du labyrinthe</title>
+    <style>
+        /* Styles pour le pad de direction */
+        #pad {
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            position: relative;
+            user-select: none;
+        }
+        #centrePad {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id='pad'>
+        <div id='centrePad'>+</div>
+    </div>
+    <div id='valeur'>
+    </div>
+</body>
+<script>
+    let supportsPassive = false;
+    try {
+        let opts = Object.defineProperty({}, 'passive', {
+            get: function() {
+                supportsPassive = true;
+            }
+        });
+        window.addEventListener("testPassive", null, opts);
+        window.removeEventListener("testPassive", null, opts);
+    } catch (e) {}
+
+    const pad = document.getElementById('pad');
+    const valeur = document.getElementById('valeur');
+    const rect = pad.getBoundingClientRect();
+    let vitesse = [0, 0];
+    let vitesseMax = 4;
+    //les vitesses de déplacement
+    let nbVitesses = vitesseMax * 2 + 1;
+    let taillePad = 180;
+    let pallierVitesse = taillePad / nbVitesses;
+    let timerId = null;
+
+    pad.style.width = pad.style.height = taillePad + 'px';
+
+    function envoiMouvement() {
+        const xhr = new XMLHttpRequest();
+        xhr.open('Mouvement', 'mouvement?x=' + vitesse[0] + '&y=' + vitesse[1], true);
+        xhr.send();
+        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1];
+    }
+    
+    function envoiMvt(position) {
+        valeur.textContent = 'x = ' + vitesse[0] + ' - y = ' + vitesse[1] + ' - Position t x = ' + position.clientX + ' - Position t y = ' + position.clientY;/*
+        const xhr = new XMLHttpRequest();
+        xhr.open('Mouvement', 'mouvement?x=' + vitesse[0] + '&y=' + vitesse[1], true);
+        xhr.send();*/
+    }
+
+pad.addEventListener('mousemove', (position) => {
+        vitesse[0] = Math.trunc((position.clientX - rect.left)/pallierVitesse) - vitesseMax;
+        vitesse[1] = vitesseMax - Math.trunc((position.clientY - rect.top)/pallierVitesse);
+});
+
+pad.addEventListener('mouseenter', (position) => {
+        vitesse[0] = Math.trunc((position.clientX - rect.left)/pallierVitesse) - vitesseMax;
+        vitesse[1] = vitesseMax - Math.trunc((position.clientY - rect.top)/pallierVitesse);
+        envoiMvt(position);
+        timerId = setInterval(envoiMvt, 10, position);
+});
+
+pad.addEventListener('mouseleave', (position) => {
+        vitesse[0] = vitesse[1] = 0;
+        clearInterval(timerId);
+        envoiMvt(position);
+        timerId = null;
+});
+
+    pad.addEventListener('touchstart', (position) => {
+        vitesse[0] = Math.trunc((position.touches[0].clientX - rect.left)/pallierVitesse) - vitesseMax;
+        vitesse[1] = vitesseMax - Math.trunc((position.touches[0].clientY - rect.top)/pallierVitesse);
+        envoiMouvement();
+        timerId = setInterval(envoiMouvement, 10);
+    }, supportsPassive ? { passive: true } : false);
+
+    pad.addEventListener('touchmove', (position) => {
+        vitesse[0] = Math.trunc((position.touches[0].clientX - rect.left)/pallierVitesse) - vitesseMax;
+        vitesse[1] = vitesseMax - Math.trunc((position.touches[0].clientY - rect.top)/pallierVitesse);
+    }, supportsPassive ? { passive: true } : false);
+
+    pad.addEventListener('touchend', () => {
+        vitesse[0] = vitesse[1] = 0;
+        clearInterval(timerId);
+        timerId = null;
+    });
+</script>
+</html>
