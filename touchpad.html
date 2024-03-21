@@ -94,6 +94,10 @@ pad.addEventListener('mouseleave', (position) => {
     }, supportsPassive ? { passive: true } : false);
 
     pad.addEventListener('touchmove', (position) => {
+        if(position.touches[0].clientX < rect.left || position.touches[0].clientX > rect.right || 
+            position.touches[0].clientY < rect.top || position.touches[0].clientY > rect.bottom)
+            return;
+            
         vitesse[0] = Math.trunc((position.touches[0].clientX - rect.left)/pallierVitesse) - vitesseMax;
         vitesse[1] = vitesseMax - Math.trunc((position.touches[0].clientY - rect.top)/pallierVitesse);
     }, supportsPassive ? { passive: true } : false);
