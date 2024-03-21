@@ -25,7 +25,7 @@
     <div id='pad'>
         <div id='centrePad'>+</div>
     </div>
-    <div id='valeur'>b
+    <div id='valeur'>a
     </div>
 </body>
 <script>
@@ -94,16 +94,14 @@ pad.addEventListener('mouseleave', (position) => {
         timerId = setInterval(envoiMouvement, 10);
     }, supportsPassive ? { passive: true } : false);
 
-    pad.addEventListener('touchmove', (position) => {
+    pad.addEventListener('touchmove', (position) => {/*
         if(position.touches[0].clientX < rect.left || position.touches[0].clientX > rect.right || position.touches[0].clientY < rect.top || position.touches[0].clientY > rect.bottom) {
                 return;
         }
         else {
-                
+               */ 
         vitesse[0] = Math.trunc((position.touches[0].clientX - rect.left)/pallierVitesse) - vitesseMax;
         vitesse[1] = vitesseMax - Math.trunc((position.touches[0].clientY - rect.top)/pallierVitesse);
-        }
-
     }, supportsPassive ? { passive: true } : false);
 
     pad.addEventListener('touchend', () => {
