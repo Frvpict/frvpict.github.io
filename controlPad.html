@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang='fr'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Touch PAD</title>
+    <style>
+        /* Style pour le touch pad */
+        #pad {
+            background-color: #f0f0f0;
+            border-radius: 50%;
+            position: relative;
+            user-select: none;
+        }
+        /* Style pour la croix au centre du touch pad */
+        #centrePad {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div id='pad'>
+        <div id='centrePad'>+</div>
+    </div>
+    <div id='valeur'>
+    </div>
+</body>
+<script>
+    let supportsPassive = false;
+    try {
+        let opts = Object.defineProperty({}, 'passive', {
+            get: function() {
+                supportsPassive = true;
+            }
+        });
+        window.addEventListener("testPassive", null, opts);
+        window.removeEventListener("testPassive", null, opts);
+    } catch (e) {}
+
+    const pad = document.getElementById('pad');
+    const rect = pad.getBoundingClientRect();
+    const valeur = document.getElementById('valeur');
+    //Position relative - Position absolue
+    let position = [[0, 0],[0, 0]];
+    //taille du touch pad
+    let taillePad = 180;
+    let timerId = null;
+
+    pad.style.width = pad.style.height = taillePad + 'px';
+
+    function affichePosition() {
+        valeur.textContent = '<p>Position relative : ' + position[0][0] + ' / ' + position[0][1] + '</p>';
+        valeur.textContent += '<p>Position absolue : ' + position[1][0] + ' / ' + position[1][1] + '</p>';
+    }
+
+    pad.addEventListener('touchstart', (evt) => {
+        //Renseigne la position relative de l'endroit touché
+        position[0][0] = evt.touches[0].clientX;
+        position[0][1] = evt.touches[0].clientY;
+
+        //Renseigne la position aboslue de l'endroit touché
+        position[1][0] = position[0][0] - rect.left;
+        position[1][1] = position[0][1] - rect.top;
+
+        affichePosition();
+        //Raffraîchit l'affichage de la position du point touché toutes les 10 millisecondes
+        timerId = setInterval(affichePosition, 10);
+    }, supportsPassive ? { passive: true } : false);
+
+    pad.addEventListener('touchmove', (evt) => {
+        //On vérifie si le point touché est extérieur à la zone du touchpad
+        if(evt.touches[0].clientX < rect.left || evt.touches[0].clientX > (taillePad + rect.left) ||
+        evt.touches[0].clientY < rect.top || evt.touches[0].clientY > (taillePad + rect.top))
+                return;
+
+        //Renseigne la position relative de l'endroit touché
+        position[0][0] = evt.touches[0].clientX;
+        position[0][1] = evt.touches[0].clientY;
+
+        //Renseigne la position aboslue de l'endroit touché
+        position[1][0] = position[0][0] - rect.left;
+        position[1][1] = position[0][1] - rect.top;
+
+    }, supportsPassive ? { passive: true } : false);
+
+    pad.addEventListener('touchend', () => {
+        position[0][0] = position[0][1] = vitesse[1][0] = vitesse[1][1] = 0;
+        clearInterval(timerId);
+        timerId = null;
+        valeur.textContent = '';
+    });
+</script>
+</html>
