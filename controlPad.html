@@ -88,11 +88,10 @@
     }, supportsPassive ? { passive: true } : false);
 
     pad.addEventListener('touchend', (evt) => {
-        position[0][0] = position[0][1] = vitesse[1][0] = vitesse[1][1] = 0;
+        //position[0][0] = position[0][1] = vitesse[1][0] = vitesse[1][1] = 0;
         clearInterval(timerId);
         timerId = null;
         valeur.innerHTML = '';
-        alert("I am an alert box!");
     });
 </script>
 </html>
